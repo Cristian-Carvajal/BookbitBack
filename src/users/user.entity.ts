@@ -1,12 +1,5 @@
 import { BookxUser } from 'src/booksxuser/booksxuser.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
 export class User {
@@ -22,16 +15,16 @@ export class User {
   @Column()
   avatar: string;
 
-  @ManyToOne(() => State, { eager: true })
-  @JoinColumn({ name: 'id_status' })
-  state: State;
+  // @ManyToOne(() => State, { eager: true })
+  // @JoinColumn({ name: 'id_status' })
+  // state: State;
 
   @Column({ default: 0 })
   coins: number;
 
-  @ManyToOne(() => Reward, { nullable: true })
-  @JoinColumn({ name: 'current_avatar' })
-  currentAvatar: Reward;
+  // @ManyToOne(() => Reward, { nullable: true })
+  // @JoinColumn({ name: 'current_avatar' })
+  // currentAvatar: Reward;
 
   @OneToMany(() => BookxUser, (bookxUser) => bookxUser.user)
   bookxUsers: BookxUser[];
