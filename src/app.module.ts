@@ -6,16 +6,18 @@ import { UsersModule } from './users/users.module';
 import { BooksModule } from './books/books.module';
 import { BooksxuserModule } from './booksxuser/booksxuser.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'TOOR321*',
-      database: 'final_proyect', //Este es el nombre de la base de datos que debo crear
+      host: process.env.DB_host,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_user,
+      password: process.env.DB_password,
+      database: process.env.DB_name, //Este es el nombre de la base de datos que debo crear
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
