@@ -24,7 +24,7 @@ export class UsersService {
   generateJwtToken(user: User): string {
     return jwt.sign(
       { id: user.id, email: user.email },
-      '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',
+      process.env.GOOGLE_CLIENT_SECRET,
       {
         expiresIn: '1h',
       },
