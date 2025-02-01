@@ -6,11 +6,15 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { updateUserDto } from './dto/updateUser.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Request as ExpressRequest } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -23,10 +27,16 @@ export class UsersController {
     return this.userService.getUsers();
   }
 
-  @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.userService.getUser(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMyProfile(@Request() req) {
+    return this.userService.getUser(req.user.id);
   }
+
+  // @Get(':id')
+  // getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+  //   return this.userService.getUser(id);
+  // }
 
   @Post()
   createUser(@Body() newUser: CreateUserDto) {
@@ -39,5 +49,11 @@ export class UsersController {
     @Body() user: updateUserDto,
   ) {
     return this.userService.updateUser(id, user);
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Request() req: ExpressRequest) {
+    return req.user;
   }
 }

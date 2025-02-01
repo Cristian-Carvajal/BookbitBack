@@ -8,15 +8,15 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
-  birth_date: string;
-
   @Column({ length: 150, unique: true })
   email: string;
 
-  @Column() // esperar para conexión entre tablas
+  @Column({ nullable: true }) // esperar para conexión entre tablas
   id_status: number;
 
   @Column({ default: 0 })
   coins: number;
+
+  @Column({ nullable: true, length: 500 })
+  avatar: string;
 }

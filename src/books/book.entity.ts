@@ -1,7 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BookxUser } from 'src/booksxuser/booksxuser.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'book' })
 export class Book {
+  @OneToMany(() => BookxUser, (bookxUser) => bookxUser.book)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,6 +19,6 @@ export class Book {
   @Column() // esperar para conexión entre tablas
   chapters: number;
 
-  @Column()
+  @Column({ default: 0 })
   publication_date: string;
 }
