@@ -20,6 +20,11 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_name, //Este es el nombre de la base de datos que debo crear
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      logging: true,
+      extra: {
+        connectTimeout: 10000,
+        ssl: false,
+      },
     }),
     UsersModule,
     BooksModule,

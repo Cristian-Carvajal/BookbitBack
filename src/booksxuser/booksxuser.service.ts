@@ -1,31 +1,58 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BookxUser } from './booksxuser.entity';
 import { Repository } from 'typeorm';
-import { createBookxUserDto } from './dto/createBookxUserDto.dto';
-import { BooksService } from 'src/books/books.service';
+import { BookxUser } from './booksxuser.entity';
+import { User } from 'src/users/user.entity';
+import { Book } from 'src/books/book.entity';
 
 @Injectable()
-export class BooksxuserService {
+export class BookxUserService {
   constructor(
     @InjectRepository(BookxUser)
-    private bookxUserRepository: Repository<BookxUser>,
-    private booksService: BooksService,
+    private readonly bookxUserRepository: Repository<BookxUser>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
   ) {}
 
-  async createBookxUser(bookxUser: createBookxUserDto) {
-    const bookFound = await this.booksService.getBook(bookxUser.book_id);
+  // 📌 Agregar un libro a la biblioteca del usuario
+  async addBookToUser(userId: number, bookId: number): Promise<BookxUser> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const book = await this.bookRepository.findOne({ where: { id: bookId } });
 
-    if (!bookFound)
-      return new HttpException('User not found', HttpStatus.NOT_FOUND);
+    if (!user || !book) {
+      throw new NotFoundException('Usuario o libro no encontrado');
+    }
 
-    const newBookxUser = this.bookxUserRepository.create(bookxUser);
-    return await this.bookxUserRepository.save(newBookxUser);
+    const bookxUser = this.bookxUserRepository.create({ user, book });
+    return this.bookxUserRepository.save(bookxUser);
   }
 
-  getBooksxUser() {
-    return this.bookxUserRepository.find({
+  // 📌 Eliminar un libro de la biblioteca del usuario
+  async removeBookFromUser(userId: number, bookId: number): Promise<void> {
+    const bookxUser = await this.bookxUserRepository.findOne({
+      where: { user: { id: userId }, book: { id: bookId } },
+    });
+
+    if (!bookxUser) {
+      throw new NotFoundException(
+        'El libro no está en la biblioteca del usuario',
+      );
+    }
+
+    await this.bookxUserRepository.remove(bookxUser);
+  }
+
+  // 📌 Obtener los libros de un usuario
+  async getUserBooks(userId: number): Promise<Book[]> {
+    const userBooks = await this.bookxUserRepository.find({
+      where: { user: { id: userId } },
       relations: ['book'],
     });
+
+    return userBooks.map((entry) => entry.book);
   }
 }

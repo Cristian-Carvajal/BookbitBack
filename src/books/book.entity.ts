@@ -3,7 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'book' })
 export class Book {
-  @OneToMany(() => BookxUser, (bookxUser) => bookxUser.book)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,11 +13,17 @@ export class Book {
   author: string;
 
   @Column()
+  editorial: string;
+
+  @Column()
   pages: number;
 
-  @Column() // esperar para conexión entre tablas
+  @Column()
   chapters: number;
 
-  @Column({ default: 0 })
-  publication_date: string;
+  @Column({ type: 'date' })
+  publication_date: Date;
+
+  @OneToMany(() => BookxUser, (bookxUser) => bookxUser.book)
+  bookxUsers: BookxUser[];
 }

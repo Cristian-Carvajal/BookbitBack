@@ -1,26 +1,17 @@
 import { Book } from 'src/books/book.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from 'src/users/user.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'bookxuser' })
 export class BookxUser {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  book_id: number;
+  @ManyToOne(() => User, (user) => user.bookxUsers, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' }) // Define la clave foránea explícitamente
+  user: User;
 
-  @ManyToOne(() => Book, (book) => book.id)
+  @ManyToOne(() => Book, (book) => book.bookxUsers, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'book_id' }) // Define la clave foránea explícitamente
   book: Book;
-
-//   @Column()
-//   author: string;
-
-//   @Column()
-//   pages: number;
-
-//   @Column() // esperar para conexión entre tablas
-//   chapters: number;
-
-//   @Column({ default: 0 })
-//   publication_date: string;
 }

@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
-import { updateUserDto } from './dto/updateUser.dto';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
@@ -31,10 +30,6 @@ export class UsersService {
     );
   }
 
-  getUsers() {
-    return this.userRepository.find();
-  }
-
   getUser(id: number) {
     return this.userRepository.findOne({
       where: {
@@ -42,10 +37,6 @@ export class UsersService {
         id,
       },
     });
-  }
-
-  updateUser(id: number, user: updateUserDto) {
-    return this.userRepository.update(id, user);
   }
 
   async getUserProfile(userId: number) {
@@ -60,5 +51,11 @@ export class UsersService {
       avatar: user.avatar,
       coins: user.coins,
     };
+    // getUsers() {
+    //   return this.userRepository.find();
+    // }
+    // updateUser(id: number, user: updateUserDto) {
+    //   return this.userRepository.update(id, user);
+    // }
   }
 }

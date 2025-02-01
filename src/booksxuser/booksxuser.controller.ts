@@ -1,18 +1,37 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { createBookxUserDto } from './dto/createBookxUserDto.dto';
-import { BooksxuserService } from './booksxuser.service';
+import {
+  Controller,
+  Post,
+  Delete,
+  Get,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { BookxUserService } from './booksxuser.service';
 
-@Controller('booksxuser')
-export class BooksxuserController {
-  constructor(private bookxUserService: BooksxuserService) {}
+@UseGuards(JwtAuthGuard) // 🔒 Solo usuarios autenticados pueden acceder
+@Controller('user-books')
+export class BookxUserController {
+  constructor(private readonly bookxUserService: BookxUserService) {}
 
-  @Post()
-  createBookxUser(@Body() bookxuser: createBookxUserDto) {
-    return this.bookxUserService.createBookxUser(bookxuser);
+  @Post(':userId/:bookId')
+  async addBookToUser(
+    @Param('userId') userId: number,
+    @Param('bookId') bookId: number,
+  ) {
+    return this.bookxUserService.addBookToUser(+userId, +bookId);
   }
 
-  @Get()
-  getBookxUser() {
-    return this.bookxUserService.getBooksxUser();
+  @Delete(':userId/:bookId')
+  async removeBookFromUser(
+    @Param('userId') userId: number,
+    @Param('bookId') bookId: number,
+  ) {
+    return this.bookxUserService.removeBookFromUser(+userId, +bookId);
+  }
+
+  @Get(':userId')
+  async getUserBooks(@Param('userId') userId: number) {
+    return this.bookxUserService.getUserBooks(+userId);
   }
 }
