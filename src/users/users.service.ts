@@ -4,11 +4,13 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as jwt from 'jsonwebtoken';
+import { BookxUserService } from 'src/booksxuser/booksxuser.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly BookxUserService: BookxUserService,
   ) {}
 
   async findByEmail(email: string): Promise<User | undefined> {
@@ -42,21 +44,17 @@ export class UsersService {
 
   async getUserProfile(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
+    const library = await this.BookxUserService.getUserBooks(userId);
 
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
     return {
       id: user.id,
-      email: user.email,
       name: user.name,
-      avatar: user.avatar,
+      email: user.email,
+      image: user.image,
       coins: user.coins,
+      books: library,
     };
-    // getUsers() {
-    //   return this.userRepository.find();
-    // }
-    // updateUser(id: number, user: updateUserDto) {
-    //   return this.userRepository.update(id, user);
-    // }
   }
 }

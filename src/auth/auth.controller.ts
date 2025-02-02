@@ -1,19 +1,15 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  Request,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  usersService: any;
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('google-login')
   async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
@@ -22,20 +18,16 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req) {
-    const userId = req.user.id; // ID del usuario autenticado extraído del token
-    const user = await this.usersService.findUserById(userId);
+  async getProfile(@Req() req) {
+    const userEmail = req.user.email; // ID del usuario autenticado extraído del token
+    const user = await this.usersService.findByEmail(userEmail);
 
     if (!user) {
       return { message: 'Usuario no encontrado' };
     }
 
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      coins: user.coins, // Asegúrate de que la base de datos tiene este campo
-      avatar: user.avatar,
-    };
+    const response = this.usersService.getUserProfile(user.id);
+
+    return { response };
   }
 }

@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Request,
+  Req,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BookxUserService } from './booksxuser.service';
@@ -15,12 +16,9 @@ import { BookxUserService } from './booksxuser.service';
 export class BookxUserController {
   constructor(private readonly bookxUserService: BookxUserService) {}
 
-  @Post(':userId/:bookId')
-  async addBookToUser(
-    @Param('userId') userId: number,
-    @Param('bookId') bookId: number,
-  ) {
-    return this.bookxUserService.addBookToUser(+userId, +bookId);
+  @Post(':bookId')
+  async addBookToUser(@Req() req, @Param('bookId') bookId: number) {
+    return this.bookxUserService.addBookToUser(req.user.id, +bookId);
   }
 
   @Delete(':userId/:bookId')

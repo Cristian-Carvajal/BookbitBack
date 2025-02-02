@@ -1,12 +1,16 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
+import { BooksxuserModule } from 'src/booksxuser/booksxuser.module';
 
 @Module({
   //forFeature me indica que entidades puede cargar
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    forwardRef(() => BooksxuserModule),
+  ],
   providers: [UsersService],
   controllers: [UsersController],
   exports: [UsersService, TypeOrmModule],

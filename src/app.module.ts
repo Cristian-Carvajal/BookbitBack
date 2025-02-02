@@ -10,13 +10,11 @@ import { ConfigModule } from '@nestjs/config';
 import { ShopService } from './shop/shop.service';
 import { ShopController } from './shop/shop.controller';
 import { ShopModule } from './shop/shop.module';
-import { ItemsXUserService } from './itemxuser/itemxuser.service';
-import { ItemsXUserController } from './itemxuser/itemxuser.controller';
 import { ItemsXUserModule } from './itemxuser/itemxuser.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_host,

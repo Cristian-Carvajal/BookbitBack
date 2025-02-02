@@ -14,7 +14,7 @@ export class User {
   email: string;
 
   @Column()
-  avatar: string;
+  image: string;
 
   // @ManyToOne(() => State, { eager: true })
   // @JoinColumn({ name: 'id_status' })
