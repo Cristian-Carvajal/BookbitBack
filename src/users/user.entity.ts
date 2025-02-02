@@ -1,4 +1,5 @@
 import { BookxUser } from 'src/booksxuser/booksxuser.entity';
+import { ItemsXUser } from 'src/itemxuser/itemxuser.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
@@ -22,9 +23,8 @@ export class User {
   @Column({ default: 0 })
   coins: number;
 
-  // @ManyToOne(() => Reward, { nullable: true })
-  // @JoinColumn({ name: 'current_avatar' })
-  // currentAvatar: Reward;
+  @OneToMany(() => ItemsXUser, (itemsXUser) => itemsXUser.user)
+  items: ItemsXUser[];
 
   @OneToMany(() => BookxUser, (bookxUser) => bookxUser.user)
   bookxUsers: BookxUser[];

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BookxUserService } from './booksxuser.service';
@@ -30,8 +31,8 @@ export class BookxUserController {
     return this.bookxUserService.removeBookFromUser(+userId, +bookId);
   }
 
-  @Get(':userId')
-  async getUserBooks(@Param('userId') userId: number) {
-    return this.bookxUserService.getUserBooks(+userId);
+  @Get()
+  async getUserBooks(@Request() req) {
+    return this.bookxUserService.getUserBooks(req.user.id);
   }
 }

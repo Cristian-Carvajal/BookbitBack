@@ -7,6 +7,11 @@ import { BooksModule } from './books/books.module';
 import { BooksxuserModule } from './booksxuser/booksxuser.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { ShopService } from './shop/shop.service';
+import { ShopController } from './shop/shop.controller';
+import { ShopModule } from './shop/shop.module';
+import { ItemsXUserService } from './itemxuser/itemxuser.service';
+import { ItemsXUserController } from './itemxuser/itemxuser.controller';
 
 @Module({
   imports: [
@@ -30,8 +35,10 @@ import { ConfigModule } from '@nestjs/config';
     BooksModule,
     BooksxuserModule,
     AuthModule,
+    ShopModule,
+    UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ShopController, ItemsXUserController],
+  providers: [AppService, ShopService, ItemsXUserService],
 })
 export class AppModule {}

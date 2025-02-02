@@ -20,14 +20,15 @@ export class UsersService {
     return await this.userRepository.save(newUser);
   }
 
-  generateJwtToken(user: User): string {
-    return jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.GOOGLE_CLIENT_SECRET,
-      {
-        expiresIn: '1h',
-      },
-    );
+  generateJwtToken(user: any) {
+    const payload = { email: user.email, id: user.id }; // Puedes incluir más datos según lo necesario
+    const secretKey = process.env.JWT_SECRET; // Asegúrate de que esta variable esté definida
+
+    if (!secretKey) {
+      throw new Error('La clave secreta para el JWT no está definida');
+    }
+
+    return jwt.sign(payload, secretKey, { expiresIn: '1h' }); // La clave secreta debe ser utilizada aquí
   }
 
   getUser(id: number) {
