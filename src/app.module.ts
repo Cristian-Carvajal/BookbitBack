@@ -12,6 +12,7 @@ import { ShopController } from './shop/shop.controller';
 import { ShopModule } from './shop/shop.module';
 import { ItemsXUserService } from './itemxuser/itemxuser.service';
 import { ItemsXUserController } from './itemxuser/itemxuser.controller';
+import { ItemsXUserModule } from './itemxuser/itemxuser.module';
 
 @Module({
   imports: [
@@ -37,8 +38,9 @@ import { ItemsXUserController } from './itemxuser/itemxuser.controller';
     AuthModule,
     ShopModule,
     UsersModule,
+    ItemsXUserModule,
   ],
-  controllers: [AppController, ShopController, ItemsXUserController],
-  providers: [AppService, ShopService, ItemsXUserService],
+  controllers: [AppController, ShopController],
+  providers: [AppService, ShopService],
 })
 export class AppModule {}

@@ -4,9 +4,6 @@
 /build
 .env
 /test-db-connection.ts
-/itemxuser
-/itemCategory
-/shop
 
 # Logs
 logs

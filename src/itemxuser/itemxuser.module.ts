@@ -10,5 +10,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [TypeOrmModule.forFeature([ItemsXUser]), ShopModule, UsersModule],
   providers: [ItemsXUserService],
   controllers: [ItemsXUserController],
+  exports: [ItemsXUserService],
 })
 export class ItemsXUserModule {}
