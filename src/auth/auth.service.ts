@@ -25,7 +25,7 @@ export class AuthService {
     const tokenPayload: CreateUserDto = {
       email: payload.email,
       name: payload.name,
-      avatar: payload.picture || '', // Agregar avatar, si no hay, asignar un valor predeterminado
+      image: payload.picture, // Agregar avatar, si no hay, asignar un valor predeterminado
     };
 
     // Buscar al usuario en la base de datos

@@ -26,7 +26,7 @@ export class AuthController {
       return { message: 'Usuario no encontrado' };
     }
 
-    const response = this.usersService.getUserProfile(user.id);
+    const response = await this.usersService.getUserProfile(user.id);
 
     return { response };
   }
