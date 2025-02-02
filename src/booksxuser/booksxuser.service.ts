@@ -53,6 +53,11 @@ export class BookxUserService {
       relations: ['book'],
     });
 
-    return userBooks.map((entry) => entry.book);
+    const books: Book[] = [];
+    for (const entry of userBooks) {
+      books.push(entry.book);
+    }
+
+    return books;
   }
 }
