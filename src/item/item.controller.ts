@@ -2,7 +2,6 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { itemService } from './item.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('item')
 export class itemController {
   constructor(private readonly itemService: itemService) {}

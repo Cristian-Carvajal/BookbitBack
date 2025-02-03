@@ -17,7 +17,7 @@ export class itemService {
     const userItems = await this.itemsXUserService.getUserItems(userId);
 
     const itemsAvailable = allItems.filter(
-      (item) => !userItems.some((userBook) => userBook.id === item.id),
+      (item) => !userItems.some((userItems) => userItems.id === item.id),
     );
 
     return itemsAvailable;
