@@ -16,6 +16,9 @@ export class item {
   @Column()
   name: string;
 
+  @Column()
+  image: string;
+
   @ManyToOne(() => ItemCategory, (category) => category.items)
   category: ItemCategory;
 

@@ -26,6 +26,11 @@ export class BookxUserController {
     return this.bookxUserService.removeBookFromUser(req.user.id, +bookId);
   }
 
+  @Get('toAdd')
+  async getBookToAdd(@Request() req) {
+    return this.bookxUserService.getBooksToAdd(req.user.id);
+  }
+
   @Get()
   async getUserBooks(@Request() req) {
     return this.bookxUserService.getUserBooks(req.user.id);

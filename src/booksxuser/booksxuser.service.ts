@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookxUser } from './booksxuser.entity';
 import { User } from 'src/users/user.entity';
 import { Book } from 'src/books/book.entity';
+import { BooksService } from 'src/books/books.service';
 
 @Injectable()
 export class BookxUserService {
@@ -16,6 +21,8 @@ export class BookxUserService {
 
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
+
+    private readonly booksService: BooksService,
   ) {}
 
   // 📌 Agregar un libro a la biblioteca del usuario
@@ -25,6 +32,16 @@ export class BookxUserService {
 
     if (!user || !book) {
       throw new NotFoundException('Usuario o libro no encontrado');
+    }
+
+    const existingBook = await this.bookxUserRepository.findOne({
+      where: { user: { id: userId }, book: { id: bookId } },
+    });
+
+    if (existingBook) {
+      throw new ConflictException(
+        'El usuario ya tiene este libro en su biblioteca',
+      );
     }
 
     const bookxUser = this.bookxUserRepository.create({ user, book });
@@ -59,5 +76,16 @@ export class BookxUserService {
     }
 
     return books;
+  }
+
+  async getBooksToAdd(userId: number): Promise<Book[]> {
+    const allBooks = await this.booksService.getBooks();
+    const userBooks = await this.getUserBooks(userId);
+
+    const booksToAdd = allBooks.filter(
+      (book) => !userBooks.some((userBook) => userBook.id === book.id),
+    );
+
+    return booksToAdd;
   }
 }
