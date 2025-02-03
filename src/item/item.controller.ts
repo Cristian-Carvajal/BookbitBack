@@ -9,6 +9,6 @@ export class itemController {
 
   @Get()
   async getAllItems(@Req() req) {
-    return this.itemService.getAvailableItems(req.user.id);
+    return this.itemService.getAllItems();
   }
 }
