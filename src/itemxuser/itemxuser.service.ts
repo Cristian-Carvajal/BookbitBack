@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ItemsXUser } from './itemxuser.entity';
 import { User } from 'src/users/user.entity';
-import { Shop } from 'src/shop/shop.entity';
+import { item } from 'src/item/item.entity';
 
 @Injectable()
 export class ItemsXUserService {
@@ -11,8 +11,8 @@ export class ItemsXUserService {
     @InjectRepository(ItemsXUser)
     private readonly itemsXUserRepository: Repository<ItemsXUser>,
 
-    @InjectRepository(Shop)
-    private readonly shopRepository: Repository<Shop>,
+    @InjectRepository(item)
+    private readonly itemRepository: Repository<item>,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -20,7 +20,7 @@ export class ItemsXUserService {
 
   async buyItem(userId: number, itemId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const item = await this.shopRepository.findOne({ where: { id: itemId } });
+    const item = await this.itemRepository.findOne({ where: { id: itemId } });
 
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');

@@ -5,11 +5,13 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as jwt from 'jsonwebtoken';
 import { BookxUserService } from 'src/booksxuser/booksxuser.service';
+import { State } from 'src/state/state.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(State) private stateRepository: Repository<State>,
     private readonly BookxUserService: BookxUserService,
   ) {}
 
@@ -18,6 +20,9 @@ export class UsersService {
   }
 
   async createUser(user: CreateUserDto) {
+    user.state = await this.stateRepository.findOne({
+      where: { category: 'user', name: 'activo' },
+    });
     const newUser = this.userRepository.create(user);
     return await this.userRepository.save(newUser);
   }

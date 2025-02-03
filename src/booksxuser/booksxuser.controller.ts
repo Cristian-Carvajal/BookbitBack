@@ -21,12 +21,9 @@ export class BookxUserController {
     return this.bookxUserService.addBookToUser(req.user.id, +bookId);
   }
 
-  @Delete(':userId/:bookId')
-  async removeBookFromUser(
-    @Param('userId') userId: number,
-    @Param('bookId') bookId: number,
-  ) {
-    return this.bookxUserService.removeBookFromUser(+userId, +bookId);
+  @Delete(':bookId')
+  async removeBookFromUser(@Request() req, @Param('bookId') bookId: number) {
+    return this.bookxUserService.removeBookFromUser(req.user.id, +bookId);
   }
 
   @Get()

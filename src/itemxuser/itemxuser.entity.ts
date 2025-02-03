@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { Shop } from 'src/shop/shop.entity';
+import { item } from 'src/item/item.entity';
 
 @Entity()
 export class ItemsXUser {
@@ -15,8 +15,8 @@ export class ItemsXUser {
   @ManyToOne(() => User, (user) => user.items)
   user: User;
 
-  @ManyToOne(() => Shop, (shop) => shop.items)
-  item: Shop;
+  @ManyToOne(() => item, (item) => item.items)
+  item: item;
 
   @CreateDateColumn()
   purchase_date: Date;

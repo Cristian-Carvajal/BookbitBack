@@ -9,7 +9,7 @@ import { ItemCategory } from 'src/itemCategory/itemCategory.entity';
 import { ItemsXUser } from 'src/itemxuser/itemxuser.entity';
 
 @Entity()
-export class Shop {
+export class item {
   @PrimaryGeneratedColumn()
   id: number;
 
