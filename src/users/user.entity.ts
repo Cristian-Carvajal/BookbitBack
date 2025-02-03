@@ -37,7 +37,7 @@ export class User {
   items: ItemsXUser[];
 
   @Column({ nullable: true })
-  currentAvatar: number;
+  currentAvatar: string;
 
   @OneToMany(() => BookxUser, (bookxUser) => bookxUser.user)
   bookxUsers: BookxUser[];

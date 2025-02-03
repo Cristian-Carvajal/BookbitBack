@@ -5,9 +5,10 @@ import { itemService } from './item.service';
 import { itemController } from './item.controller';
 import { item } from './item.entity';
 import { UsersModule } from 'src/users/users.module';
+import { ItemsXUserModule } from 'src/itemxuser/itemxuser.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([item]), forwardRef(() => UsersModule)],
+  imports: [TypeOrmModule.forFeature([item]), forwardRef(() => UsersModule), forwardRef(() => ItemsXUserModule)],
   providers: [itemService],
   controllers: [itemController],
   exports: [itemService, TypeOrmModule],
