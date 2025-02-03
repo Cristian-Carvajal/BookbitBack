@@ -15,6 +15,11 @@ export class itemService {
   async getAvailableItems(userId: number) {
     const allItems = await this.getAllItems();
     const userItems = await this.itemsXUserService.getUserItems(userId);
+    console.log('-------------');
+    console.log(allItems);
+    console.log('-------------');
+    console.log(userItems);
+    console.log('-------------');
 
     const itemsAvailable = allItems.filter(
       (item) => !userItems.some((userItems) => userItems.id === item.id),
