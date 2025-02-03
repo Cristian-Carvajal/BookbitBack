@@ -10,7 +10,6 @@ import { ConfigModule } from '@nestjs/config';
 import { itemModule } from './item/item.module';
 import { ItemsXUserModule } from './itemxuser/itemxuser.module';
 import { ChallengeModule } from './challenge/challenge.module';
-import { ChallengeXUserModule } from './challengexuser/challengexuser.module';
 import { StateModule } from './state/state.module';
 
 @Module({
@@ -39,7 +38,6 @@ import { StateModule } from './state/state.module';
     UsersModule,
     ItemsXUserModule,
     ChallengeModule,
-    ChallengeXUserModule,
     StateModule,
   ],
   controllers: [AppController],

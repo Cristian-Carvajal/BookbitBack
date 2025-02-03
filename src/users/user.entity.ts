@@ -7,9 +7,9 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { BookxUser } from 'src/booksxuser/booksxuser.entity';
-import { ChallengeXUser } from 'src/challengexuser/challengexuser.entity';
 import { ItemsXUser } from 'src/itemxuser/itemxuser.entity';
 import { State } from 'src/state/state.entity';
+import { Challenge } from 'src/challenge/challenge.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -38,6 +38,6 @@ export class User {
   @OneToMany(() => BookxUser, (bookxUser) => bookxUser.user)
   bookxUsers: BookxUser[];
 
-  @OneToMany(() => ChallengeXUser, (challengeXUser) => challengeXUser.user)
-  challengeXUser: ChallengeXUser[];
+  @OneToMany(() => Challenge, (challenge) => challenge.user)
+  challenge: Challenge[];
 }
