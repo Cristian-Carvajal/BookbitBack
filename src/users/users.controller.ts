@@ -5,6 +5,9 @@ import {
   Post,
   UseGuards,
   Request,
+  Patch,
+  Req,
+  Param,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UsersService } from './users.service';
@@ -40,5 +43,11 @@ export class UsersController {
   @Get('profile')
   async getProfile(@Request() req: ExpressRequest) {
     return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async setAvatar(@Req() req, @Param(':id') id: number) {
+    return this.userService.setAvatar(req.user.id, id);
   }
 }

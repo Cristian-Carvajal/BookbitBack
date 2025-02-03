@@ -20,7 +20,7 @@ export class ChallengeService {
     userId: number,
     name: string,
     pages: number,
-    deadline: number,
+    deadLine: number,
   ): Promise<Challenge> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
@@ -37,8 +37,8 @@ export class ChallengeService {
 
     const challenge = new Challenge();
     challenge.name = name;
-    challenge.deadline = deadline;
-    challenge.reward = this.calculateReward(pages, deadline);
+    challenge.deadLine = deadLine;
+    challenge.reward = this.calculateReward(pages, deadLine);
     challenge.user = user;
     challenge.state = defaultState;
     challenge.completion_date = null;
@@ -86,10 +86,10 @@ export class ChallengeService {
     });
   }
 
-  private calculateReward(pages: number, deadline: number): number {
-    if (deadline <= 0) return 0;
+  private calculateReward(pages: number, deadLine: number): number {
+    if (deadLine <= 0) return 0;
     const logFactor = Math.log2(pages + 1);
-    const baseReward = logFactor * (pages / deadline) * 10;
+    const baseReward = logFactor * (pages / deadLine) * 10;
     return Math.max(Math.floor(baseReward), 1);
   }
 }

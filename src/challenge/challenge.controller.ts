@@ -20,14 +20,15 @@ export class ChallengeController {
   @Post()
   async createChallenge(
     @Req() req,
+    @Body('name') name: string,
     @Body('pages') pages: number,
-    @Body('deadline') deadline: number,
+    @Body('deadLine') deadLine: number,
   ): Promise<Challenge> {
     return this.challengeService.createChallenge(
       req.user.id,
-      req.user.name,
+      name,
       pages,
-      deadline,
+      deadLine,
     );
   }
 

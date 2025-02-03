@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { BooksxuserModule } from 'src/booksxuser/booksxuser.module';
 import { StateModule } from 'src/state/state.module';
+import { ItemsXUserModule } from 'src/itemxuser/itemxuser.module';
 
 @Module({
   //forFeature me indica que entidades puede cargar
@@ -12,6 +13,7 @@ import { StateModule } from 'src/state/state.module';
     TypeOrmModule.forFeature([User]),
     forwardRef(() => BooksxuserModule),
     StateModule,
+    forwardRef(() => ItemsXUserModule),
   ],
   providers: [UsersService],
   controllers: [UsersController],

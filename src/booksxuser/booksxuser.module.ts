@@ -10,7 +10,7 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     TypeOrmModule.forFeature([BookxUser]),
     forwardRef(() => UsersModule),
-    BooksModule,
+    forwardRef(() => BooksModule),
   ],
   providers: [BookxUserService],
   controllers: [BookxUserController],

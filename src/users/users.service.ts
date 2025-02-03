@@ -6,12 +6,16 @@ import { CreateUserDto } from './dto/createUser.dto';
 import * as jwt from 'jsonwebtoken';
 import { BookxUserService } from 'src/booksxuser/booksxuser.service';
 import { State } from 'src/state/state.entity';
+import { ItemsXUser } from 'src/itemxuser/itemxuser.entity';
 
 @Injectable()
 export class UsersService {
+  itemRepository: any;
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(State) private stateRepository: Repository<State>,
+    @InjectRepository(ItemsXUser)
+    private readonly itemsXUserRepository: Repository<ItemsXUser>,
     private readonly BookxUserService: BookxUserService,
   ) {}
 
@@ -61,5 +65,27 @@ export class UsersService {
       coins: user.coins,
       books: library,
     };
+  }
+
+  async setAvatar(userId: number, itemId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('Usuario no encontrado.');
+    }
+
+    const avatar = await this.itemRepository.findOne({
+      where: { id: itemId },
+    });
+
+    if (!avatar) {
+      throw new Error('avatar no encontrado.');
+    }
+
+    user.currentAvatar = avatar.image;
+
+    return this.userRepository.save(user);
   }
 }

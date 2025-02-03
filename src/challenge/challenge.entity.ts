@@ -28,7 +28,7 @@ export class Challenge {
   pages: number; // Cantidad de páginas a leer
 
   @Column({ type: 'int' })
-  deadline: number; // Tiempo límite en días
+  deadLine: number; // Tiempo límite en días
 
   @Column({ type: 'int' })
   reward: number; // Monedas otorgadas
