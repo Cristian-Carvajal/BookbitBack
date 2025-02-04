@@ -6,6 +6,7 @@ import { AchievementxUser } from './achievementxuser.entity';
 import { UsersModule } from 'src/users/users.module';
 import { AchievementModule } from 'src/achievement/achievement.module';
 import { BooksxuserModule } from 'src/booksxuser/booksxuser.module';
+import { StateModule } from 'src/state/state.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { BooksxuserModule } from 'src/booksxuser/booksxuser.module';
     forwardRef(() => BooksxuserModule),
     forwardRef(() => UsersModule),
     forwardRef(() => AchievementModule),
+    forwardRef(() => StateModule),
   ],
   providers: [AchievementXUserService],
   controllers: [AchievementXUserController],
