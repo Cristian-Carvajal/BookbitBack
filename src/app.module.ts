@@ -11,6 +11,8 @@ import { itemModule } from './item/item.module';
 import { ItemsXUserModule } from './itemxuser/itemxuser.module';
 import { ChallengeModule } from './challenge/challenge.module';
 import { StateModule } from './state/state.module';
+import { AchievementxuserModule } from './achievementxuser/achievementxuser.module';
+import { AchievementModule } from './achievement/achievement.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { StateModule } from './state/state.module';
     ItemsXUserModule,
     ChallengeModule,
     StateModule,
+    AchievementxuserModule,
+    AchievementModule,
   ],
   controllers: [AppController],
   providers: [AppService],

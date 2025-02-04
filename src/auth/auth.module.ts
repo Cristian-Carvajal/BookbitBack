@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { StateModule } from 'src/state/state.module';
 import { ChallengeModule } from 'src/challenge/challenge.module';
+import { AchievementxuserModule } from 'src/achievementxuser/achievementxuser.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ChallengeModule } from 'src/challenge/challenge.module';
     UsersModule,
     StateModule,
     ChallengeModule,
+    AchievementxuserModule,
     PassportModule.register({ defaultStrategy: 'jwt' }), // Registra passport
     JwtModule.registerAsync({
       imports: [ConfigModule],

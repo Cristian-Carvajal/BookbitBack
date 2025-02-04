@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { State } from 'src/state/state.entity';
 import { LessThan, Repository } from 'typeorm';
 import { Challenge } from 'src/challenge/challenge.entity';
+import { AchievementXUserService } from 'src/achievementxuser/achievementxuser.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     @InjectRepository(Challenge)
     private challengeRepository: Repository<Challenge>,
     private userService: UsersService,
+    private achievementXUserService: AchievementXUserService,
   ) {
     this.oAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
@@ -43,6 +45,7 @@ export class AuthService {
     // Si no existe, registrar al nuevo usuario
     if (!user) {
       user = await this.userService.createUser(tokenPayload);
+      await this.achievementXUserService.assignAchievementsToUser(user.id);
     }
 
     await this.updateExpiredChallenges(user.id);

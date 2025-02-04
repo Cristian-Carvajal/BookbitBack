@@ -25,32 +25,21 @@ export class AchievementXUserService {
   }
 
   // 📌 Asignar un logro a un usuario
-  async assignAchievementToUser(
-    userId: number,
-    achievementId: number,
-  ): Promise<AchievementxUser> {
+  async assignAchievementsToUser(userId: number): Promise<AchievementxUser> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const achievement = await this.achievementRepository.findOne({
-      where: { id: achievementId },
-    });
+    const achievements = await this.achievementRepository.find();
 
-    if (!user || !achievement) {
+    if (!user || !achievements) {
       throw new NotFoundException('Usuario o logro no encontrado');
     }
 
-    // Verificar si el usuario ya tiene este logro
-    const existingAchievement = await this.achievementXUserRepository.findOne({
-      where: { user: { id: userId }, achievement: { id: achievementId } },
-    });
-
-    if (existingAchievement) {
-      return existingAchievement; // No lo volvemos a asignar
+    for (const achievement of achievements) {
+      const userAchievement = this.achievementXUserRepository.create({
+        user,
+        achievement,
+      });
+      await this.achievementXUserRepository.save(userAchievement);
     }
-
-    const userAchievement = this.achievementXUserRepository.create({
-      user,
-      achievement,
-    });
-    return this.achievementXUserRepository.save(userAchievement);
+    return;
   }
 }
