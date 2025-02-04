@@ -52,7 +52,6 @@ export class AchievementXUserService {
         { state: assignedAchievement },
       );
     }
-    console.log('************');
     return;
   }
 
