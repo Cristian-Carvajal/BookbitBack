@@ -12,7 +12,7 @@ import { ItemsXUserModule } from 'src/itemxuser/itemxuser.module';
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => BooksxuserModule),
-    StateModule,
+    forwardRef(() => StateModule),
     forwardRef(() => ItemsXUserModule),
   ],
   providers: [UsersService],

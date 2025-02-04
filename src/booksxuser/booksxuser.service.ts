@@ -9,10 +9,14 @@ import { BookxUser } from './booksxuser.entity';
 import { User } from 'src/users/user.entity';
 import { Book } from 'src/books/book.entity';
 import { BooksService } from 'src/books/books.service';
+import { AchievementxUser } from 'src/achievementxuser/achievementxuser.entity';
 
 @Injectable()
 export class BookxUserService {
   constructor(
+    @InjectRepository(AchievementxUser)
+    private readonly achievementXUserRepository: Repository<AchievementxUser>,
+
     @InjectRepository(BookxUser)
     private readonly bookxUserRepository: Repository<BookxUser>,
 
@@ -29,9 +33,23 @@ export class BookxUserService {
   async addBookToUser(userId: number, bookId: number): Promise<BookxUser> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const book = await this.bookRepository.findOne({ where: { id: bookId } });
+    const achievements = await this.achievementXUserRepository.find({
+      where: { achievement: { category: { name: 'addBook' } } },
+    });
 
     if (!user || !book) {
       throw new NotFoundException('Usuario o libro no encontrado');
+    }
+
+    if (!achievements) {
+      throw new NotFoundException('Logro no encontrado');
+    }
+
+    for (const achievement of achievements) {
+      this.achievementXUserRepository.update(
+        { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+        { progress: (achievement.progress += 1) },
+      );
     }
 
     const existingBook = await this.bookxUserRepository.findOne({

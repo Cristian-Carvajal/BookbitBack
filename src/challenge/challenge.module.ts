@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Challenge } from './challenge.entity';
 import { ChallengeService } from './challenge.service';
@@ -10,9 +10,9 @@ import { BooksxuserModule } from 'src/booksxuser/booksxuser.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Challenge]),
-    UsersModule,
-    StateModule,
-    BooksxuserModule,
+    forwardRef(() => StateModule),
+    forwardRef(() => UsersModule),
+    forwardRef(() => BooksxuserModule),
   ],
   controllers: [ChallengeController],
   providers: [ChallengeService],

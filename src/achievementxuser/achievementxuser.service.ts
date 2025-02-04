@@ -42,4 +42,34 @@ export class AchievementXUserService {
     }
     return;
   }
+
+  async setAchievements(userId: number): Promise<AchievementxUser> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const achievements = await this.achievementXUserRepository.find();
+
+    if (!user || !achievements) {
+      throw new NotFoundException('Usuario o logro no encontrado');
+    }
+
+    for (const achievement of achievements) {
+      if ((
+        (achievement.progress / achievement.achievement.condition) * 100) >
+        100
+      ) {
+        this.achievementXUserRepository.update(
+          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+          { percentage: 100 },
+        );
+      } else {
+        const percentage =
+          (achievement.progress / achievement.achievement.condition) * 100;
+        this.achievementXUserRepository.update(
+          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+          { percentage: percentage },
+        );
+      }
+    }
+
+    return;
+  }
 }

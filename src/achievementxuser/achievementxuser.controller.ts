@@ -13,6 +13,7 @@ export class AchievementXUserController {
   // 📌 Obtener los logros de un usuario
   @Get()
   async getUserAchievements(@Req() req): Promise<AchievementxUser[]> {
+    this.achievementXUserService.setAchievements(req.user.id);
     return this.achievementXUserService.getUserAchievements(req.user.id);
   }
 }
