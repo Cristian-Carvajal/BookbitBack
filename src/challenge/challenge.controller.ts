@@ -23,12 +23,14 @@ export class ChallengeController {
     @Body('name') name: string,
     @Body('pages') pages: number,
     @Body('deadLine') deadLine: number,
+    @Body('bookId') bookId: number,
   ): Promise<Challenge> {
     return this.challengeService.createChallenge(
       req.user.id,
       name,
       pages,
       deadLine,
+      bookId,
     );
   }
 
@@ -44,14 +46,9 @@ export class ChallengeController {
 
   @Patch(':challengeId/complete/:bookId')
   async completeChallenge(
-    @Param('bookId') bookId: number,
     @Param('challengeId') challengeId: number,
     @Req() req,
   ): Promise<Challenge> {
-    return this.challengeService.completeChallenge(
-      req.user.id,
-      challengeId,
-      bookId,
-    );
+    return this.challengeService.completeChallenge(req.user.id, challengeId);
   }
 }

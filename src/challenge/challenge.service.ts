@@ -24,6 +24,7 @@ export class ChallengeService {
     name: string,
     pages: number,
     deadLine: number,
+    bookId: number,
   ): Promise<Challenge> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
@@ -44,6 +45,7 @@ export class ChallengeService {
     challenge.pages = pages;
     challenge.reward = this.calculateReward(pages, deadLine);
     challenge.user = user;
+    challenge.bookId = bookId;
     challenge.state = defaultState;
     challenge.completion_date = null;
     challenge.startDate = new Date();
@@ -63,12 +65,12 @@ export class ChallengeService {
   async completeChallenge(
     userId: number,
     challengeId: number,
-    bookId: number,
   ): Promise<Challenge> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const challenge = await this.challengeRepository.findOne({
       where: { id: challengeId, user: { id: userId } },
     });
+    const bookId = challenge.bookId;
     const bookxuser = await this.bookxUserRepository.findOne({
       where: { book: { id: bookId }, user: { id: userId } },
     });
@@ -103,7 +105,7 @@ export class ChallengeService {
 
     user.coins += challenge.reward;
 
-    bookxuser.bookPercentaje += challenge.pages / bookxuser.book.pages;
+    bookxuser.bookPercentaje += (challenge.pages / bookxuser.book.pages) * 100;
 
     if (bookxuser.bookPercentaje > 100) {
       bookxuser.bookPercentaje = 100;

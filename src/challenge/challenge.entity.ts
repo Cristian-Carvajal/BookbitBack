@@ -41,4 +41,7 @@ export class Challenge {
 
   @Column({ type: 'date' })
   deadLineDate: Date;
+
+  @Column({ type: 'int' })
+  bookId: number; // Cantidad de páginas a leer
 }
