@@ -50,4 +50,10 @@ export class UsersController {
   async setAvatar(@Req() req, @Param(':id') id: number) {
     return this.userService.setAvatar(req.user.id, id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('mascot/:id')
+  async setMascot(@Req() req, @Param(':id') id: number) {
+    return this.userService.setMascot(req.user.id, id);
+  }
 }

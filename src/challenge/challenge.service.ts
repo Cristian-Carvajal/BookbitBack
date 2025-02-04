@@ -55,6 +55,21 @@ export class ChallengeService {
     return this.challengeRepository.save(challenge);
   }
 
+  async removeChallengeFromUser(
+    userId: number,
+    challengeId: number,
+  ): Promise<void> {
+    const challenge = await this.challengeRepository.findOne({
+      where: { user: { id: userId }, id: challengeId },
+    });
+
+    if (!challenge) {
+      throw new NotFoundException('El reto no existe');
+    }
+
+    await this.challengeRepository.remove(challenge);
+  }
+
   async getUserChallenges(userId: number): Promise<Challenge[]> {
     return this.challengeRepository.find({
       where: { user: { id: userId } },

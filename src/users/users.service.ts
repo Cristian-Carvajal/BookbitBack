@@ -88,4 +88,26 @@ export class UsersService {
 
     return this.userRepository.save(user);
   }
+
+  async setMascot(userId: number, mascotId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('Usuario no encontrado.');
+    }
+
+    const mascot = await this.itemRepository.findOne({
+      where: { id: mascotId },
+    });
+
+    if (!mascot) {
+      throw new Error('avatar no encontrado.');
+    }
+
+    user.currentMascot = mascot.image;
+
+    return this.userRepository.save(user);
+  }
 }

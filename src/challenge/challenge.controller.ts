@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { ChallengeService } from './challenge.service';
 import { Challenge } from './challenge.entity';
@@ -42,6 +43,17 @@ export class ChallengeController {
   @Get(':id')
   async getChallengeById(@Param('id') id: number): Promise<Challenge> {
     return this.challengeService.getChallengeById(id);
+  }
+
+  @Delete(':challengeId')
+  async removeBookFromUser(
+    @Req() req,
+    @Param('challengeId') challengeId: number,
+  ) {
+    return this.challengeService.removeChallengeFromUser(
+      req.user.id,
+      +challengeId,
+    );
   }
 
   @Patch(':challengeId/complete/:bookId')

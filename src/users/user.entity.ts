@@ -39,6 +39,9 @@ export class User {
   @Column({ nullable: true })
   currentAvatar: string;
 
+  @Column({ nullable: true })
+  currentMascot: string;
+
   @OneToMany(() => BookxUser, (bookxUser) => bookxUser.user)
   bookxUsers: BookxUser[];
 
