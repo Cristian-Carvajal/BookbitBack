@@ -35,4 +35,10 @@ export class Challenge {
 
   @Column({ type: 'date', nullable: true })
   completion_date: Date; // Fecha de finalización (si se completa)
+
+  @Column({ type: 'date' })
+  startDate: Date;
+
+  @Column({ type: 'date' })
+  deadLineDate: Date;
 }

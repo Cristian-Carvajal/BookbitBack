@@ -42,11 +42,16 @@ export class ChallengeController {
     return this.challengeService.getChallengeById(id);
   }
 
-  @Patch(':challengeId/complete')
+  @Patch(':challengeId/complete/:bookId')
   async completeChallenge(
+    @Param('bookId') bookId: number,
     @Param('challengeId') challengeId: number,
     @Req() req,
   ): Promise<Challenge> {
-    return this.challengeService.completeChallenge(req.user.id, challengeId);
+    return this.challengeService.completeChallenge(
+      req.user.id,
+      challengeId,
+      bookId,
+    );
   }
 }

@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { Challenge } from './challenge.entity';
 import { User } from 'src/users/user.entity';
 import { State } from 'src/state/state.entity';
+import { BookxUser } from 'src/booksxuser/booksxuser.entity';
 
 @Injectable()
 export class ChallengeService {
   constructor(
     @InjectRepository(Challenge)
     private readonly challengeRepository: Repository<Challenge>,
+    @InjectRepository(BookxUser)
+    private readonly bookxUserRepository: Repository<BookxUser>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(State)
@@ -42,6 +45,9 @@ export class ChallengeService {
     challenge.user = user;
     challenge.state = defaultState;
     challenge.completion_date = null;
+    challenge.startDate = new Date();
+    challenge.deadLineDate = new Date(challenge.startDate);
+    challenge.deadLineDate.setDate(challenge.startDate.getDate() + deadLine);
 
     return this.challengeRepository.save(challenge);
   }
@@ -56,11 +62,19 @@ export class ChallengeService {
   async completeChallenge(
     userId: number,
     challengeId: number,
+    bookId: number,
   ): Promise<Challenge> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const challenge = await this.challengeRepository.findOne({
       where: { id: challengeId, user: { id: userId } },
     });
+    const bookxuser = await this.bookxUserRepository.findOne({
+      where: { book: { id: bookId }, user: { id: userId } },
+    });
+
+    if (!bookxuser) {
+      throw new NotFoundException('El libro no esta en su biblioteca');
+    }
 
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
@@ -81,11 +95,23 @@ export class ChallengeService {
     if (challenge.state.name == 'completado') {
       throw new Error('Logro ya completado');
     }
+
+    if (challenge.state.name == 'vencido') {
+      throw new Error('Logro ya se ha vencido');
+    }
+
     user.coins += challenge.reward;
+
+    bookxuser.bookPercentaje += challenge.pages / bookxuser.book.pages;
+
+    if (bookxuser.bookPercentaje > 100) {
+      bookxuser.bookPercentaje = 100;
+    }
 
     challenge.state = completedState;
     challenge.completion_date = new Date();
 
+    this.bookxUserRepository.save(bookxuser);
     this.userRepository.save(user);
 
     return this.challengeRepository.save(challenge);

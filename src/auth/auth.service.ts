@@ -3,12 +3,21 @@ import { GoogleLoginDto } from './dto/google-login.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from 'src/users/dto/createUser.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { State } from 'src/state/state.entity';
+import { LessThan, Repository } from 'typeorm';
+import { Challenge } from 'src/challenge/challenge.entity';
 
 @Injectable()
 export class AuthService {
   private oAuth2Client: OAuth2Client;
 
-  constructor(private userService: UsersService) {
+  constructor(
+    @InjectRepository(State) private stateRepository: Repository<State>,
+    @InjectRepository(Challenge)
+    private challengeRepository: Repository<Challenge>,
+    private userService: UsersService,
+  ) {
     this.oAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
 
@@ -36,9 +45,41 @@ export class AuthService {
       user = await this.userService.createUser(tokenPayload);
     }
 
+    await this.updateExpiredChallenges(user.id);
     // Devolver un token JWT para la sesión de la aplicación
     const jwtToken = this.userService.generateJwtToken(user); // Lógica para generar el JWT
 
     return { token: jwtToken }; // Devuelve el JWT para usar en el frontend
+  }
+
+  async updateExpiredChallenges(userId: number) {
+    const now = new Date();
+
+    const expiredState = await this.stateRepository.findOne({
+      where: { category: 'challenge', name: 'vencido' },
+    });
+
+    if (!expiredState) {
+      return;
+    }
+
+    // Obtener los retos del usuario que ya vencieron y aún están activos
+    const expiredChallenges = await this.challengeRepository.find({
+      where: {
+        user: { id: userId },
+        deadLineDate: LessThan(now), // Fecha de vencimiento pasada
+        state: { name: 'activo' }, // Estado actual activo
+      },
+      relations: ['state'],
+    });
+
+    if (expiredChallenges.length === 0) {
+      return;
+    }
+
+    for (const challenge of expiredChallenges) {
+      challenge.state = expiredState;
+      await this.challengeRepository.save(challenge);
+    }
   }
 }
