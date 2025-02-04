@@ -41,6 +41,7 @@ export class ChallengeService {
     const challenge = new Challenge();
     challenge.name = name;
     challenge.deadLine = deadLine;
+    challenge.pages = pages;
     challenge.reward = this.calculateReward(pages, deadLine);
     challenge.user = user;
     challenge.state = defaultState;
