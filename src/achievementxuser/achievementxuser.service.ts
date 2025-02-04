@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Achievement } from 'src/achievement/achievement.entity';
 import { AchievementxUser } from './achievementxuser.entity';
+import { State } from 'src/state/state.entity';
 
 @Injectable()
 export class AchievementXUserService {
@@ -14,6 +15,8 @@ export class AchievementXUserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Achievement)
     private readonly achievementRepository: Repository<Achievement>,
+    @InjectRepository(State)
+    private readonly stateRepository: Repository<State>,
   ) {}
 
   // 📌 Obtener logros obtenidos por un usuario
@@ -33,12 +36,21 @@ export class AchievementXUserService {
       throw new NotFoundException('Usuario o logro no encontrado');
     }
 
+    const assignedAchievement = await this.stateRepository.findOne({
+      where: { category: 'achievement', name: 'en proceso' },
+    });
     for (const achievement of achievements) {
       const userAchievement = this.achievementXUserRepository.create({
         user,
         achievement,
       });
       await this.achievementXUserRepository.save(userAchievement);
+    }
+    for (const achievement of achievements) {
+      this.achievementXUserRepository.update(
+        { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+        { state: assignedAchievement },
+      );
     }
     return;
   }
@@ -52,13 +64,20 @@ export class AchievementXUserService {
     }
 
     for (const achievement of achievements) {
-      if ((
-        (achievement.progress / achievement.achievement.condition) * 100) >
+      if (
+        (achievement.progress / achievement.achievement.condition) * 100 >
         100
       ) {
         this.achievementXUserRepository.update(
           { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
           { percentage: 100 },
+        );
+        const completedAchievement = await this.stateRepository.findOne({
+          where: { category: 'achievement', name: 'conseguido' },
+        });
+        this.achievementXUserRepository.update(
+          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+          { state: completedAchievement },
         );
       } else {
         const percentage =
