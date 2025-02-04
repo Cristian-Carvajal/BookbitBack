@@ -78,6 +78,9 @@ export class ChallengeService {
       throw new Error('Estado "completado" no encontrado.');
     }
 
+    if (challenge.state.name == 'completado') {
+      throw new Error('Logro ya completado');
+    }
     user.coins += challenge.reward;
 
     challenge.state = completedState;
@@ -97,8 +100,10 @@ export class ChallengeService {
 
   private calculateReward(pages: number, deadLine: number): number {
     if (deadLine <= 0) return 0;
-    const logFactor = Math.log2(pages + 1);
-    const baseReward = logFactor * (pages / deadLine) * 10;
+
+    const logFactor = Math.log2(pages + 1) / 3; // 🔹 Reduce aún más el impacto del logaritmo
+    const baseReward = logFactor * (pages / (deadLine * 3)) * 3; // 🔹 Menor multiplicador final y mayor divisor
+
     return Math.max(Math.floor(baseReward), 1);
   }
 }
