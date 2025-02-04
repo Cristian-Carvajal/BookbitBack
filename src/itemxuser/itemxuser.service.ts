@@ -48,7 +48,7 @@ export class ItemsXUserService {
   async getUserItems(userId: number) {
     return this.itemsXUserRepository.find({
       where: { user: { id: userId } },
-      relations: ['item'],
+      relations: ['item', 'item.category'],
     });
   }
 }

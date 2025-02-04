@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { ItemCategory } from 'src/itemCategory/itemCategory.entity';
 import { ItemsXUser } from 'src/itemxuser/itemxuser.entity';
@@ -20,6 +21,7 @@ export class item {
   image: string;
 
   @ManyToOne(() => ItemCategory, (category) => category.items)
+  @JoinColumn({ name: 'category' })
   category: ItemCategory;
 
   @Column()

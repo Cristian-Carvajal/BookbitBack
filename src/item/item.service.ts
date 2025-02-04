@@ -15,21 +15,16 @@ export class itemService {
   async getAvailableItems(userId: number) {
     const allItems = await this.getAllItems();
     const userItems = await this.itemsXUserService.getUserItems(userId);
-    console.log('-------------');
-    console.log(allItems);
-    console.log('-------------');
-    console.log(userItems);
-    console.log('-------------');
 
     const itemsAvailable = allItems.filter(
-      (item) => !userItems.some((userItems) => userItems.id === item.id),
+      (item) => !userItems.some((userItems) => userItems.item.id === item.id),
     );
 
     return itemsAvailable;
   }
 
   async getAllItems() {
-    return this.itemRepository.find();
+    return this.itemRepository.find({ relations: ['category'] });
   }
 
   async findById(id: number) {
