@@ -57,9 +57,14 @@ export class ChallengeService {
     userId: number,
     challengeId: number,
   ): Promise<Challenge> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     const challenge = await this.challengeRepository.findOne({
       where: { id: challengeId, user: { id: userId } },
     });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
     if (!challenge) {
       throw new Error('Reto no encontrado.');
@@ -73,8 +78,12 @@ export class ChallengeService {
       throw new Error('Estado "completado" no encontrado.');
     }
 
+    user.coins += challenge.reward;
+
     challenge.state = completedState;
     challenge.completion_date = new Date();
+
+    this.userRepository.save(user);
 
     return this.challengeRepository.save(challenge);
   }
