@@ -64,15 +64,15 @@ export class BookxUserService {
   }
 
   // 📌 Obtener los libros de un usuario
-  async getUserBooks(userId: number): Promise<Book[]> {
+  async getUserBooks(userId: number): Promise<BookxUser[]> {
     const userBooks = await this.bookxUserRepository.find({
       where: { user: { id: userId } },
       relations: ['book'],
     });
 
-    const books: Book[] = [];
+    const books: BookxUser[] = [];
     for (const entry of userBooks) {
-      books.push(entry.book);
+      books.push(entry);
     }
 
     return books;

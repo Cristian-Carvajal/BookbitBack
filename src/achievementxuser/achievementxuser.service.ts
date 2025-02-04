@@ -20,7 +20,7 @@ export class AchievementXUserService {
   async getUserAchievements(userId: number): Promise<AchievementxUser[]> {
     return this.achievementXUserRepository.find({
       where: { user: { id: userId } },
-      relations: ['achievement'],
+      relations: ['achievement', 'achivement.category'],
     });
   }
 
