@@ -14,6 +14,9 @@ export class AchievementXUserController {
   @Get()
   async getUserAchievements(@Req() req): Promise<AchievementxUser[]> {
     this.achievementXUserService.setAchievements(req.user.id);
-    return this.achievementXUserService.getUserAchievements(req.user.id);
+    const aux = this.achievementXUserService.getUserAchievements(req.user.id);
+    console.log('-------------------');
+    console.log(aux);
+    return aux;
   }
 }

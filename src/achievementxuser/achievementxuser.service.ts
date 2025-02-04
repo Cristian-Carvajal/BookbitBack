@@ -23,7 +23,7 @@ export class AchievementXUserService {
   async getUserAchievements(userId: number): Promise<AchievementxUser[]> {
     return this.achievementXUserRepository.find({
       where: { user: { id: userId } },
-      relations: ['achievement', 'achivement.category'],
+      relations: ['achievement', 'achievement.category'],
     });
   }
 
@@ -52,40 +52,45 @@ export class AchievementXUserService {
         { state: assignedAchievement },
       );
     }
+    console.log('************');
     return;
   }
 
   async setAchievements(userId: number): Promise<AchievementxUser> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const achievements = await this.achievementXUserRepository.find();
+    const achievements = await this.achievementXUserRepository.find({
+      relations: ['achievement', 'achievement.category'],
+    });
 
     if (!user || !achievements) {
       throw new NotFoundException('Usuario o logro no encontrado');
     }
 
     for (const achievement of achievements) {
-      if (
-        (achievement.progress / achievement.achievement.condition) * 100 >
-        100
-      ) {
-        this.achievementXUserRepository.update(
-          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
-          { percentage: 100 },
-        );
-        const completedAchievement = await this.stateRepository.findOne({
-          where: { category: 'achievement', name: 'conseguido' },
-        });
-        this.achievementXUserRepository.update(
-          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
-          { state: completedAchievement },
-        );
-      } else {
-        const percentage =
-          (achievement.progress / achievement.achievement.condition) * 100;
-        this.achievementXUserRepository.update(
-          { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
-          { percentage: percentage },
-        );
+      if (achievement.progress != 0) {
+        if (
+          (achievement.progress / achievement.achievement.condition) * 100 >
+          100
+        ) {
+          this.achievementXUserRepository.update(
+            { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+            { percentage: 100 },
+          );
+          const completedAchievement = await this.stateRepository.findOne({
+            where: { category: 'achievement', name: 'conseguido' },
+          });
+          this.achievementXUserRepository.update(
+            { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+            { state: completedAchievement },
+          );
+        } else {
+          const percentage =
+            (achievement.progress / achievement.achievement.condition) * 100;
+          this.achievementXUserRepository.update(
+            { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro
+            { percentage: percentage },
+          );
+        }
       }
     }
 
