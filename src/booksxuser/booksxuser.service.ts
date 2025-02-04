@@ -34,17 +34,16 @@ export class BookxUserService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const book = await this.bookRepository.findOne({ where: { id: bookId } });
     const achievements = await this.achievementXUserRepository.find({
-      where: { achievement: { category: { name: 'addBook' } } },
+      where: { achievement: { category: { name: 'addBooks' } } },
+      relations: ['achievement', 'achievement.category'],
     });
 
     if (!user || !book) {
       throw new NotFoundException('Usuario o libro no encontrado');
     }
-
     if (!achievements) {
       throw new NotFoundException('Logro no encontrado');
     }
-
     for (const achievement of achievements) {
       this.achievementXUserRepository.update(
         { user: { id: user.id }, achievement: { id: achievement.id } }, // Condición para encontrar el registro

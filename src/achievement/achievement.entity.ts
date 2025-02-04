@@ -12,7 +12,9 @@ export class Achievement {
   @Column()
   description: string;
 
-  @ManyToOne(() => AchievementCategory, (category) => category.achievements)
+  @ManyToOne(() => AchievementCategory, (category) => category.achievements, {
+    eager: true,
+  }) // Prueba con { eager: true }
   category: AchievementCategory;
 
   @Column()
